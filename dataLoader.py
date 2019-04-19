@@ -7,3 +7,7 @@ import os
 import torch.nn as nn
 import numpy as np
 from torch.autograd import Variable
+
+
+def isimg(filename):
+    return any(filename.endswith(extension) for extension in [".png", ".jpg", ".jpeg"])
