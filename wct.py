@@ -39,11 +39,11 @@ class WCT(nn.Module):
                 k_c = i
                 break
 		
-		c_e_after_diag = c_e[0:k_c]
+	c_e_after_diag = c_e[0:k_c]
         c_v_after_diag = c_v[:,0:k_c]
-		c_d = (c_e_after_diag).pow(-0.5)
+	c_d = (c_e_after_diag).pow(-0.5)
 		
-		# Whitening process of content image
+	# Whitening process of content image
         eigen_vector_times_value = torch.mm(c_v_after_diag, torch.diag(c_d))
         final_equation = torch.mm(eigen_vector_times_value, (c_v_after_diag.t()))
         whiten_content_features_view = torch.mm(final_equation, content_features_view)
