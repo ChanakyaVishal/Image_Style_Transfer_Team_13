@@ -17,7 +17,10 @@ class encoder1(nn.Module):
         self.conv2.weight = torch.nn.Parameter(vgg1.get(2).weight.float())
         self.relu = nn.ReLU(inplace=True)
 
- 
+    def forward(self,x):
+        ## Forward Propogation
+        out = self.relu(self.conv2(self.reflecPad1(self.conv1(x))))
+        return out
 
 #Decoder module
 class decoder1(nn.Module):
@@ -29,6 +32,10 @@ class decoder1(nn.Module):
         self.conv3.bias = torch.nn.Parameter(d1.get(1).bias.float())
         self.conv3.weight = torch.nn.Parameter(d1.get(1).weight.float())
 
+    def forward(self,x):
+        ## Forward Propogation
+        out = self.conv3(self.reflecPad2(x))
+        return out
 
 # Encoder module
 class encoder2(nn.Module):
@@ -61,6 +68,13 @@ class encoder2(nn.Module):
         self.relu4 = nn.ReLU(inplace=True)
 
 
+    def forward(self,x):
+        out = self.conv3(self.reflecPad3(self.relu2(self.conv2(self.reflecPad1(self.conv1(x))))))
+        pool = self.relu3(out)
+        out,pool_idx = self.maxPool(pool)
+        out = self.relu4(self.conv4(self.reflecPad4(out)))
+        return out
+
 
 #Decoder module
 class decoder2(nn.Module):
@@ -87,7 +101,12 @@ class decoder2(nn.Module):
         self.conv7.weight = torch.nn.Parameter(d.get(8).weight.float())
         self.conv7.bias = torch.nn.Parameter(d.get(8).bias.float())
 
-  
+    def forward(self,x):
+        out = self.reflecPad5(x) 
+        out = self.unpool(self.relu5(self.conv5(out)))
+        out = self.relu6(self.conv6(self.reflecPad6(out)))
+        out = self.conv7(self.reflecPad7(out))
+        return out
 
 class encoder3(nn.Module):
     def __init__(self,vgg):
@@ -136,7 +155,16 @@ class encoder3(nn.Module):
         self.conv6.bias = torch.nn.Parameter(vgg.get(16).bias.float())
         self.relu6 = nn.ReLU(inplace=True)
 
-  
+    def forward(self,x):
+
+        out = self.conv3(self.reflecPad3(self.relu2(self.conv2(self.reflecPad1(self.conv1(x))))))
+        pool1 = self.relu3(out)
+        out,pool_idx = self.maxPool(pool1)
+        out = self.conv5(self.reflecPad5(self.relu4(self.conv4(self.reflecPad4(out)))))
+        pool2 = self.relu5(out)
+        out,pool_idx2 = self.maxPool2(pool2)
+        out = self.relu6(self.conv6(self.reflecPad6(out)))
+        return out
 
 class decoder3(nn.Module):
     def __init__(self,d):
@@ -179,6 +207,13 @@ class decoder3(nn.Module):
         self.conv11.weight = torch.nn.Parameter(d.get(15).weight.float())
         self.conv11.bias = torch.nn.Parameter(d.get(15).bias.float())
 
+    def forward(self,x):
+
+        out = self.unpool(self.relu7(self.conv7(self.reflecPad7(x))))
+        out = self.reflecPad9(self.relu8(self.conv8(self.reflecPad8(out))))
+        out = self.reflecPad10(self.unpool2(self.relu9(self.conv9(out))))
+        out = self.conv11(self.reflecPad11(self.relu10(self.conv10(out))))
+        return out
 
 class encoder4(nn.Module):
     def __init__(self,vgg):
@@ -261,7 +296,27 @@ class encoder4(nn.Module):
         self.conv10.bias = torch.nn.Parameter(vgg.get(29).bias.float())
         self.relu10 = nn.ReLU(inplace=True)
         # 28 x 28
-   
+    def forward(self,x):
+
+        out = self.relu2(self.conv2(self.reflecPad1(self.conv1(x))))
+        out = self.conv3(self.reflecPad3(out))
+        pool1 = self.relu3(out)
+        out,pool_idx = self.maxPool(pool1)
+        out = self.relu4(self.conv4(self.reflecPad4(out)))
+        out = self.conv5(self.reflecPad5(out))
+        pool2 = self.relu5(out)
+        out,pool_idx2 = self.maxPool2(pool2)
+
+        out = self.relu6(self.conv6(self.reflecPad6(out)))
+
+        out = self.relu7(self.conv7(self.reflecPad7(out)))
+        out = self.relu8(self.conv8(self.reflecPad8(out)))
+        out = self.conv9(self.reflecPad9(out))
+        pool3 = self.relu9(out)
+        out,pool_idx3 = self.maxPool3(pool3)
+
+        out = self.relu10(self.conv10(self.reflecPad10(out)))
+        return out
 
 class decoder4(nn.Module):
     def __init__(self,d):
@@ -339,7 +394,19 @@ class decoder4(nn.Module):
 
 
 
-   
+    def forward(self,x):
+        # decoder
+       
+        out = self.unpool(self.relu11(self.conv11(self.reflecPad11(x))))
+        out = self.relu12(self.conv12(self.reflecPad12(out)))
+        out = self.relu13(self.conv13(self.reflecPad13(out)))
+        out = self.relu14(self.conv14(self.reflecPad14(out)))
+        out = self.unpool2(self.relu15(self.conv15(self.reflecPad15(out))))
+        out = self.relu16(self.conv16(self.reflecPad16(out)))
+        out = self.unpool3(self.relu17(self.conv17(self.reflecPad17(out))))
+        out = self.reflecPad19(self.relu18(self.conv18(self.reflecPad18(out))))
+        out = self.conv19(out)
+        return out
 class encoder5(nn.Module):
     def __init__(self,vgg):
         super(encoder5,self).__init__()
@@ -447,7 +514,24 @@ class encoder5(nn.Module):
         self.conv14.bias = torch.nn.Parameter(vgg.get(42).bias.float())
         self.relu14 = nn.ReLU(inplace=True)
 
-  
+    def forward(self,x):
+        out = self.reflecPad3(self.relu2(self.conv2(self.reflecPad1(self.conv1(x)))))
+        out = self.relu3(self.conv3(out))
+        out,pool_idx = self.maxPool(out)
+        out = self.reflecPad5(self.relu4(self.conv4(self.reflecPad4(out))))
+        out = self.relu5(self.conv5(out))
+        out,pool_idx2 = self.maxPool2(out)
+        out = self.conv7(self.reflecPad7(self.relu6(self.conv6(self.reflecPad6(out)))))
+        out = self.reflecPad9(self.relu8(self.conv8(self.reflecPad8(self.relu7(out)))))
+        out = self.relu9(self.conv9(out))
+        out,pool_idx3 = self.maxPool3(out)
+        out = self.conv11(self.reflecPad11(self.relu10(self.conv10(self.reflecPad10(out)))))
+        out = self.relu12(self.conv12(self.reflecPad12(self.relu11(out))))
+        out = self.relu13(self.conv13(self.reflecPad13(out)))
+        out,pool_idx4 = self.maxPool4(out)
+        out = self.relu14(self.conv14(self.reflecPad14(out)))
+        return out
+
 
 class decoder5(nn.Module):
     def __init__(self,d):
@@ -547,6 +631,16 @@ class decoder5(nn.Module):
         self.conv27.weight = torch.nn.Parameter(d.get(41).weight.float())
         self.conv27.bias = torch.nn.Parameter(d.get(41).bias.float())
 
-  
+    def forward(self,x):
+        # decoder
 
-
+        out = self.reflecPad16(self.unpool(self.relu15(self.conv15(self.reflecPad15(x)))))
+        out = self.reflecPad18(self.relu17(self.conv17(self.reflecPad17(self.relu16(self.conv16(out))))))
+        out = self.relu19(self.conv19(self.reflecPad19(self.relu18(self.conv18(out)))))
+        out = self.reflecPad21(self.relu20(self.conv20(self.reflecPad20(self.unpool2(out))))) 
+        out = self.relu22(self.conv22(self.reflecPad22(self.relu21(self.conv21(out)))))
+        out = self.reflecPad24(self.unpool3(self.relu23(self.conv23(self.reflecPad23(out)))))
+        out = self.reflecPad25(self.relu24(self.conv24(out)))
+        out = self.reflecPad26(self.unpool4(self.relu25(self.conv25(out))))
+        out = self.conv27(self.reflecPad27(self.relu26(self.conv26(out))))
+        return out
