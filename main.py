@@ -44,4 +44,18 @@ except OSError:
 dataset = Dataset(CONTENT_DIR, STYLE_DIR,out_size)
 loader = torch.utils.data.DataLoader(dataset=dataset,
                                      batch_size=1,
-                                     shuffle=False) 
+                                     shuffle=False)
+
+wct = WCT(args)
+def styleTransfer(contentImg,styleImg,imname,csF):
+
+    sF1 = wct.e1(styleImg)
+    cF1 = wct.e1(contentImg)
+    sF1 = sF1.data.cpu().squeeze(0)
+    cF1 = cF1.data.cpu().squeeze(0)
+    csF1 = wct.transform(cF1,sF1,csF,alpha)
+    Im1 = wct.d1(csF1)
+
+    # save_image has this wired design to pad images with 4 pixels at default.
+    vutils.save_image(Im1.data.cpu().float(),os.path.join(OUTPUT_DIR,imname))
+    return
