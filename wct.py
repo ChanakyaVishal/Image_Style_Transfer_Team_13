@@ -16,7 +16,7 @@ class WCT(nn.Module):
         self.e1 = encoder1(vgg1)
         self.d1 = decoder1(decoder1_torch)
 
-    def transform(self, content_features, style_features):
+    def transform(self, content_features, style_features, cstyle_features, alpha):
 
         content_features = content_features.double()
         style_features = style_features.double()
@@ -74,5 +74,12 @@ class WCT(nn.Module):
         target_feature = torch.mm(recon_2, whiten_content_features_view)
         target_feature = target_feature + style_mean.unsqueeze(1).expand_as(target_feature)    
         target_feature = target_feature.view_as(content_features)
+		
+		# Balance the effect of the stylization using variabel alpha
+        cc_style_features = alpha * target_feature + (1.0 - alpha) * content_features
+        cc_style_features = cc_style_features.float().unsqueeze(0)
+        cstyle_features.data.resize_(cc_style_features.size()).copy_(cc_style_features)
+
+        return cstyle_features
 
 
