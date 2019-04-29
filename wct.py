@@ -2,8 +2,8 @@ from __future__ import division
 import torch
 from torch.utils.serialization import load_lua
 import torchvision.transforms as transforms
-from model import decoder1
-from model import encoder1
+from model import decoder1,decoder2,decoder3,decoder4,decoder5
+from model import encoder1,encoder2,encoder3,encoder4,encoder5
 import torch.nn as nn
 
 class WCT(nn.Module):
@@ -12,9 +12,27 @@ class WCT(nn.Module):
         # Load pre-trained network
         vgg1 = load_lua(args.vgg1)
         decoder1_torch = load_lua(args.decoder1)
+        vgg2 = load_lua(args.vgg2)
+        decoder2_torch = load_lua(args.decoder2)
+        vgg3 = load_lua(args.vgg3)
+        decoder3_torch = load_lua(args.decoder3)
+        vgg4 = load_lua(args.vgg4)
+        decoder4_torch = load_lua(args.decoder4)
+        vgg5 = load_lua(args.vgg5)
+        decoder5_torch = load_lua(args.decoder5)
+
 
         self.e1 = encoder1(vgg1)
         self.d1 = decoder1(decoder1_torch)
+        self.e2 = encoder2(vgg2)
+        self.d2 = decoder2(decoder2_torch)
+        self.e3 = encoder3(vgg3)
+        self.d3 = decoder3(decoder3_torch)
+        self.e4 = encoder4(vgg4)
+        self.d4 = decoder4(decoder4_torch)
+        self.e5 = encoder5(vgg5)
+        self.d5 = decoder5(decoder5_torch)
+
 
     def transform(self, content_features, style_features, cstyle_features, alpha):
 
