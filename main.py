@@ -87,3 +87,27 @@ def styleTransfer(contentImg,styleImg,imname,csF):
     # save_image has this wired design to pad images with 4 pixels at default.
     vutils.save_image(Im1.data.cpu().float(),os.path.join(OUTPUT_DIR,imname))
     return
+
+cImg = torch.Tensor()
+sImg = torch.Tensor()
+csF = torch.Tensor()
+csF = Variable(csF)
+if(cuda):
+    cImg = cImg.cuda(0)
+    sImg = sImg.cuda(0)
+    csF = csF.cuda(0)
+    wct.cuda(0)
+for i,(contentImg,styleImg,imname) in enumerate(loader):
+    imname = imname[0]
+    print('Transferring Style to ' + imname)
+    if (cuda):
+        contentImg = contentImg.cuda(0)
+        styleImg = styleImg.cuda(0)
+    cImg = Variable(contentImg,volatile=True)
+    sImg = Variable(styleImg,volatile=True)
+    start_time = time.time()
+    # WCT Style Transfer
+    styleTransfer(cImg,sImg,imname,csF)
+    end_time = time.time()
+    print('Time Elapsed: %f\n\n' % (end_time - start_time))
+    
